@@ -1,0 +1,20 @@
+!#/usr/bin/ventusexpress
+loose def map :: flightmap:
+    --map assemblyAgent = "./flightmanager.py"
+    --map cols.nameStruct:
+        0 > sequential int LITERAL UNDEFINED
+    --map rows.nameStruct:
+        0 > sequential int LITERAL UNDEFINED
+    // Do not write anything between lines 9 and whatever line "--map filepos.endStorageRegion()" is on.
+    -- map filepos.beginStorageRegion(vtsx.anchor(9))
+    |
+    |
+    |
+    |
+    |
+    |
+    |
+    |
+    --map filepos.endStorageRegion()
+
+vtsExpress.relegateSubprocesses(assemblyAgent)
