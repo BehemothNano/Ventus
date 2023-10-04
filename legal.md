@@ -7,3 +7,5 @@ Redistributions in binary form must reproduce the above copyright notice, this l
 Neither the name of the University nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED ''AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+Using the MIT License. (C) 2023 Dylan Buchanan

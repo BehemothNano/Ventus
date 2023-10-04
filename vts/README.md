@@ -2,6 +2,8 @@
 This is a fast language for creating easily interpretable data structures without having to have all parts of them.
 In other words, VentusExpress or VTSX allows the storage of data in small files external to programs with a loose, non-sql like format, wherein there is no strict organizational structure, and data can just "thrown in" per se. This allows the usage and conversion of the data to supported languages such that things that should persist may remain. This is not intended to be used as a database, though it theoretically could be.
 
+
+
 ## Other things:
 You'll notice that there are two ways of starting a data structure declaration in VTSX - "loose", or "strict". Each has advantages, for example, loose allows a declaration such as the following for a map (considered to be different to dictionaries):
 
@@ -11,8 +13,8 @@ You'll notice that there are two ways of starting a data structure declaration i
             0 > sequential int LITERAL UNDEFINED
         --map rows.nameStruct:
             0 > sequential int LITERAL UNDEFINED
-        // Do not write anything between lines 9 and whatever line "--map filepos.endStorageRegion()" is on.
-        -- map filepos.beginStorageRegion(vtsx.anchor(9))
+        // Do not write anything between lines 9 and whatever line "--map vtsx.endStorageRegion()" is on.
+        -- map vtsx.beginStorageRegion(vtsx.anchor(9))
         |
         |
         |
@@ -21,7 +23,7 @@ You'll notice that there are two ways of starting a data structure declaration i
         |
         |
         |
-        --map filepos.endStorageRegion()
+        --map vtsx.endStorageRegion()
 
     vtsExpress.relegateSubprocesses(assemblyAgent)
 
@@ -29,15 +31,15 @@ Notice the use of the | character. It is considered a structural character when 
 Other things of importance are anchors, begin/end storage regions, and the last line,
     vtsExpress.relegateSubprocesses(assemblyAgent)
 The first two allow the user to define where the data is actually stored. 
-    filepos.beginStorageRegion(anchor)
+    vtsx.beginStorageRegion(anchor)
 Takes an anchor 
     vtsx.anchor(lineNum)
 where lineNum refers to the line the anchor is on. In the above code, 
-    --map filepos.beginStorageRegion(vtsx.anchor(9))
+    --map vtsx.beginStorageRegion(vtsx.anchor(9))
 denotes that the map's storage region starts on line nine. However, this could instead be
-    --map filepos.beginStorageRegion(vtxs.anchor(5000))
+    --map vtsx.beginStorageRegion(vtxs.anchor(5000))
 which would make the storage region start on line 5000 instead of the line directly after the *beginStorageRegion*. 
-    --map filepos.endStorageRegion()
+    --map vtsx.endStorageRegion()
 just needs to come after the *beginStorageRegion* line, but doesn't need an anchor. It can be given an anchor such that the data is given a concrete position in the file as opposed to a flexible one as is done above. In other words, a flexible position means that the data can use as many lines as it wants, which will make it nicely arranged. If it's forced between two lines, it'll just conform to that specification. However, using a flexible position is recommended, as one of the main advantages to storing data using VentusExpress is being able to see both the data, and how it is structured/what attributes it has, all in one place.
 
 Going back to the last line,
@@ -59,9 +61,44 @@ where *map* is the **data type**, *"flightmap"* is the **name** of the map, and 
 *rmDef* should either be *true* or *false* (defaults to *false*), as it declares whether or not VentusExpress should also delete the object definition. It defaults to false as the user may want to just delete the data stored there, but wants to keep the structure to fill with more data later. To fully remove the data and it's definition, simply set *rmDef* to *True*.
 
 
+
+
+Another note with anchors, and tracking lines in general:
+    vtsx.subtrack.lines.nextLine // provides an integer with the same value as the next line number.
+    vtsx.subtrack.lines.thisLine // provides an integer with the same value as the current line number.
+    vtsx.anchor(n, "anchorName") // creates an anchor on line n with name "anchorName". It can later be referenced by *vtsx.anchor("anchorName")*.
+You can also use *subtrack.lines.x* to do something like the following, making the file structure significantly less restrictive and annoying:
+    loose def datatype :: name:
+        --datatype vtsx.beginStorageRegion(vtsx.anchor(vtsx.subtrack.lines.lastLine - 5))
+        --datatype endStorageRegion(spacing=1)
+
+    loose def datatype :: name2:
+        --datatype vtsx.beginStorageRegion(vtsx.anchor(vtsx.subtrack.lines.lastLine - 3))
+        --datatype endStorageRegion(spacing=1)
+In the above code, two objects are created - name, and name2. Rather than storing their data right below their respective definitions, it is stored at the end of the file, 5 lines from the bottom for name, and 3 lines from the bottom for name2. Notice how the following would break if anything above it was added (line numbers on left):
+    1 loose def datatype :: name3:
+    2     --datatype vtsx.beginStorageRegion(vtsx.anchor(4))
+    3     --datatype endStorageRegion(spacing=1)
+    4     |
+    5     |
+    6
+
+Why is setting an anchor on a specific line even possible then?
+Performance. When computing things like *lastLine*, *nextLine*, *prevLine*, *thisLine*, etc., the translation layer has to go through a little bit of extra work to figure out what those things are referring to. It's a marginal difference, but for performance critical production use cases, having a strict structure within the file does provide some performance benefits, and so, *anchor(n)* where n is an integer referring to a line number is highly recommended. For development, however, it's a horrible idea to use anchors with set line numbers, unless the file is super short.
+
+However, there is still a use case for more flexible anchors in production environments. If the .vtsx file is being altered and read in real time, it can be significantly more efficient to use *vtsx.subtrack* to do the math for you if the modifications to the file will change the position of things with fixed line numbers. It's also easier, as you don't have to manually go into the file to alter line numbers, keep track of line numbers yourself, or think of a semi-complex system to do it for you. You could use 
+    vtsx.alter(file path, line num, new val || delta)
+to change the specific lines for a slightly more efficient system, but this too would be stupid, as the line numbers for the lines that need to be altered would also change. In other words, the alternative to using *subtrack* in this case is to make your own version of *subtrack*.
+
+
+
+
 Every structure has attributes, similar to columns in a SQL database. Not all of these need to be used, and if they aren't specified, the user can either decide to use the default value, or to force all undefined attributes to a single value with the useage of:
     --datatype vtsx.udas : VALUE
 For example, using the conformity statment above with the map example, 
+
+
+
 
 ----------------
 This file is part of VentusExpress.

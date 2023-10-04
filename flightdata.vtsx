@@ -1,4 +1,16 @@
 !#/usr/bin/ventusexpress
+/*
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of the University nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED ''AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+Using the MIT License. (C) 2023 Dylan Buchanan
+*/
+// 
 loose def map :: flightmap:
     --map assemblyAgent = "./flightmanager.py"
     --map cols.nameStruct:
@@ -6,7 +18,7 @@ loose def map :: flightmap:
     --map rows.nameStruct:
         0 > sequential int LITERAL UNDEFINED
     // Do not write anything between lines 9 and whatever line "--map filepos.endStorageRegion()" is on.
-    -- map filepos.beginStorageRegion(vtsx.anchor(9))
+    --map vtsx.beginStorageRegion(vtsx.anchor(vtsx.subtrack.lines.nextLine))
     |
     |
     |
@@ -16,5 +28,31 @@ loose def map :: flightmap:
     |
     |
     --map filepos.endStorageRegion()
+
+// Slightly different to flightmap, while flightmap is a literal map, this is an array of coordinates on the map.
+// The path is completed in the order of index 0 to n, where n is the length of the array - 1. On completion, the 
+// boolean tracking whether or not something has been covered is set to true.
+strict def route :: flightpath:
+    --route assemblyAgent = "./flightmanager.py"
+    --route.rStruct = vtsExpress.generalStructDef("linear", "array")
+    --route vtsx.udas : vtsExpress.dts.route.udas-default-aerial_2D
+    // Form: [[x, y], [a, b], [c, d]] etc. 
+    --route.form = array 2D: subarray 1D: int LITERAL 0, int LITERAL 0, bool LITERAL 0
+    // Tolerance of 50m off of defined path 
+    --route.tolerance = 50
+    --route.length = int LITERAL self.baseTrack("length")
+    --route vtsx.beginStorageRegion(vtsx.anchor(vtsx.subtrack.lines.nextLine))
+    |
+    |
+    |
+    --route.endStorageRegion()
+
+strict def class :: FlightData:
+    --class assemblyAgent = "./flightmanager.py"
+    --class.member(flightmap)
+    --class.member(flightpath)
+    --class.members.struct=modified :: modification:
+        --mod class.members.addAttribute("owner", type=ownership, value=vtsx.ptr(autoAssign=true, target=self))
+    --class.form = type=SuperStruct, storage=instanced, assembly=pointer::vtsx.formPointer()
 
 vtsExpress.relegateSubprocesses(assemblyAgent)
