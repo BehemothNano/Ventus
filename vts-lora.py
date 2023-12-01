@@ -10,3 +10,12 @@ THIS SOFTWARE IS PROVIDED ''AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIE
 
 Using the MIT License. (C) 2023 Dylan Buchanan
 """
+
+def testConnection():
+    pass
+
+def getConnSpeed():
+    pass
+
+def send(target, message):
+    pass

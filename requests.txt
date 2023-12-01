@@ -1,0 +1,47 @@
+A file containing all valid requests (see vts-client, vts-setup, vts-server).
+All lines that do not start with an '!' will not be read. Don't start a line with an '!' if you don't want it to be considered a valid request.
+Comments, such as this one, do not need any notation.
+
+-----------
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of the University nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED ''AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+Using the MIT License. (C) 2023 Dylan Buchanan
+-----------
+
+Format:
+!<name of thing being requested> | arg1, arg2, arg3, etc.
+Note that the vertical bar and following arguements are not required.
+
+-----------
+As a reminder, avoid using '!' as the first character in a line unless you want it to be considered a valid request.
+You can add more valid requests at any time, but note that the getRequest() function in skutils.py will need to be adjusted to handle it.
+--------------------------------------------------
+Misc (not really to do with information drones need):
+Forces skutils to get the most recent version of this list, useful if adding a request on the fly.
+!updateRequests
+
+Setup exclusive:
+Name user sees for each drone
+!name
+Internal ID of each drone
+!id
+Drone's caste
+!caste
+
+Not setup exclusive:
+!flightData
+!flightPath
+!position | relative, global
+!time
+!objective
+!orders
+!arrangement
+!posConversion | position
+!latency | clientID, t1_client
+!endLatency

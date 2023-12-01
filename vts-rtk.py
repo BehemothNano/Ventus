@@ -24,8 +24,8 @@ def getHeading():
 	heading = rtk.head
 	return heading
 
-def getDistToHome():
-	dlX = math.abs(home[0] - )
-	dlZ = math.abs(home[1] - )
+def getDistToHome(position):
+	dlX = math.abs(home[0] - position[0])
+	dlZ = math.abs(home[1] - position[1])
 	dist = (math.sqrt((dlX ** 2) + (dlZ ** 2)))
 	return dist

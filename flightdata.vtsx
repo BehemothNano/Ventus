@@ -10,7 +10,12 @@ THIS SOFTWARE IS PROVIDED ''AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIE
 
 Using the MIT License. (C) 2023 Dylan Buchanan
 */
-// 
+// Retroactively import flightmanager for a two-way stream connection
+@flightmanager::vtsx.backport(target_caste=upstream)
+!@vtsx.backport(current_caste=downstream)
+
+
+// map of coords, each coordinate has a bool denoting whether or not it is part of the path.
 loose def map :: flightmap:
     --map assemblyAgent = "./flightmanager.py"
     --map cols.nameStruct:
@@ -28,6 +33,8 @@ loose def map :: flightmap:
     |
     |
     --map filepos.endStorageRegion()
+
+     
 
 // Slightly different to flightmap, while flightmap is a literal map, this is an array of coordinates on the map.
 // The path is completed in the order of index 0 to n, where n is the length of the array - 1. On completion, the 
@@ -47,6 +54,8 @@ strict def route :: flightpath:
     |
     --route.endStorageRegion()
 
+
+
 strict def class :: FlightData:
     --class assemblyAgent = "./flightmanager.py"
     --class.member(flightmap)
@@ -54,5 +63,13 @@ strict def class :: FlightData:
     --class.members.struct=modified :: modification:
         --mod class.members.addAttribute("owner", type=ownership, value=vtsx.ptr(autoAssign=true, target=self))
     --class.form = type=SuperStruct, storage=instanced, assembly=pointer::vtsx.formPointer()
+    --class.reverb:: targetLang=python, translationLayer=vtsx.backport::upstream()
+
+
+
+loose def contour :subtype=translate: name=fileMember:
+    --contour assemblyAgent(vtsx.contourAssembly)
+    --contour.members(FlightData{flightmap, flightpath})
+    --contour.role = vtsx.translation_manager
 
 vtsExpress.relegateSubprocesses(assemblyAgent)

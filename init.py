@@ -14,6 +14,7 @@ import os
 import sys
 import math
 import config
+import flightmanager as fmg
 import vts-rtk as rtk
 import vts-network as nw
 import vts-status as sts
@@ -21,16 +22,16 @@ import vts-layer as layer
 import vts-locate as lc
 import vts-clean as clean
 import vts-lcd as lcd
-import flightmanager as fmg
+import vts-setup as setup
 
-defaultCaste = 1
-
+# Note that the server's caste is 0, leader drone is 1, gps drone is 2, other drones are 3
 class vts():
-	def __init__(self, pos=rtk.getPos(), caste=defaultCaste, peers=nw.getPeers(), conn=nw.LoRaDataManager(name=f"VTS-{self.caste}"), flightpath=fmg.getFlightPath()):
-		self.pos = pos
+	members = {0: 0, 1: 0, 2: 0, 3: 0} # Tracks members of each caste (sort of)
+	def __init__(self, caste, pos=rtk.getPos(), peers=nw.getPeers(), flightpath=fmg.getFlightPath()):
 		self.caste = caste
+		self.pos = pos
 		self.peers = peers
-		self.conn = conn
+		self.conn = nw.LoRaDataManager(name=f"VTS-{self.caste:}")
 		self.flightpath = flightpath
 
 	def start(self, objective="groundInit"):
@@ -39,6 +40,10 @@ class vts():
 			match objective:
 				case "groundInit":
 					if self.conn.checkConnections() and self.conn.getPeerStatus(rt="percent") and rtk.getStatus() == 0 and self.flightpath is not None:
+				
+				case "":
+
+
 						
 
 

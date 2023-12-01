@@ -10,3 +10,14 @@ THIS SOFTWARE IS PROVIDED ''AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIE
 
 Using the MIT License. (C) 2023 Dylan Buchanan
 """
+from vts import vtsx, vtsExpress
+vtsx.backport(twsComponent="flightdata.vtsx")
+vtsx.translationlayer(vtsx.tl(o=2), TLStruct=contour) # Set translation layer, optimize for performance
+fd = vtsExpress.retrieveAsynchronousObject(target=flightdata.translationContour, landing="memBuffer", format=.ext)
+
+
+
+class FlightData():
+    def __init__(self):
+        self.flightmap = fd.FlightData.flightmap
+        self.flightpath = fd.FlightData.flightpath
