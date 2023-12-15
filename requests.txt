@@ -45,3 +45,8 @@ Not setup exclusive:
 !posConversion | position
 !latency | clientID, t1_client
 !endLatency
+!kill
+!abandon
+!setTarget | target
+!rmTarget | targetID
+!dispatch | targetID
