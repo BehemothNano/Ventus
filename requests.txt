@@ -1,4 +1,4 @@
-A file containing all valid requests (see vts-client, vts-setup, vts-server).
+A file containing all valid requests (see vts-client, vts-setup, init).
 All lines that do not start with an '!' will not be read. Don't start a line with an '!' if you don't want it to be considered a valid request.
 Comments, such as this one, do not need any notation.
 
